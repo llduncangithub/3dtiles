@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include <osg/Material>
 #include <osg/PagedLOD>
 #include <osgDB/ReadFile>
