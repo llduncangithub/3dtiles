@@ -20,6 +20,7 @@
 #include "tiny_gltf.h"
 #include "stb_image_write.h"
 #include "extern.h"
+#include "osgb23dtile.h"
 
 using namespace std;
 

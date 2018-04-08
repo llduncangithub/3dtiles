@@ -127,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="tileset.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="osgb23dtile.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
