@@ -785,6 +785,7 @@ extern "C" bool osgb2glb(const char* in, const char* out) {
     return true;
 }
 
+
 bool mkdirs(const char* path)
 {
 	return osgDB::makeDirectory(path);
