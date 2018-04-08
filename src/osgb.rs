@@ -104,11 +104,11 @@ pub fn osgb_batch_convert(
             let stem = path_tile.file_stem().unwrap().to_str().unwrap();
             let osgb = path_tile.join(stem).with_extension("osgb");
             if osgb.exists() && !osgb.is_dir() {
-                // convert this path
+                // convert this path:倾斜摄影测量数据目录中的pagedlod根文件
                 task_count += 1;
-                let in_buf = str_to_vec_c(osgb.to_str().unwrap());
-                let out_dir = dir_dest.join("Data").join(stem);
-                fs::create_dir_all(&out_dir)?;
+                let in_buf = str_to_vec_c(osgb.to_str().unwrap());  //输入pagedlod的root节点
+                let out_dir = dir_dest.join("Data").join(stem);     //输出目录+"/Data"+stem(节点树所在目录)
+                fs::create_dir_all(&out_dir)?;                      //创建输出目录
                 let out_buf = str_to_vec_c(out_dir.to_str().unwrap());
                 let path_clone = path_tile.clone();
                 let sender_clone = sender.clone();
@@ -116,7 +116,7 @@ pub fn osgb_batch_convert(
                     let mut root_box = vec![0f64; 6];
                     let mut json_buf = vec![];
                     let mut json_len = 0i32;
-                    let out_ptr = osgb23dtile_path(
+                    let out_ptr = osgb23dtile_path(  //对pagedlod整个树进行3dtile转换
                         in_buf.as_ptr(),
                         out_buf.as_ptr(),
                         root_box.as_mut_ptr(),
@@ -170,6 +170,7 @@ pub fn osgb_batch_convert(
         }
     }
 
+	//构建tileset.json
     let root_geometric_error = get_geometric_error(center_y, 10);
     let mut tileset_json = String::new();
     tileset_json +=

@@ -704,6 +704,8 @@ std::string osg_string ( const char* path ) {
 外部创建好目录
 外面分配好 box[6][double]
 外面分配好 string [1024*1024]
+in_path:      pagedlod的根节点文件名
+out_path:     将整个pagedlod树转换成3dtile后的输出目录,须调用者事先创建该目录
 */
 extern "C" void* osgb23dtile_path(
     const char* in_path, const char* out_path, 
