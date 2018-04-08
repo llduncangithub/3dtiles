@@ -3,5 +3,6 @@
 
 int main()
 {
+	bool br = osgb23dtile("", "");
 	return 0;
 }
