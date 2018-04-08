@@ -1,4 +1,6 @@
 #include <Windows.h>
+#include <osgDB\FileUtils>
+#include <osgDB\FileNameUtils>
 #include <osg/Material>
 #include <osg/PagedLOD>
 #include <osgDB/ReadFile>
@@ -781,4 +783,18 @@ extern "C" bool osgb2glb(const char* in, const char* out) {
     ret = write_file(out, b3dm_buf.data(), b3dm_buf.size());
     if (!ret) return false;
     return true;
+}
+
+bool mkdirs(const char* path)
+{
+	return osgDB::makeDirectory(path);
+}
+
+bool write_file(const char* filename, const char* buf, unsigned long buf_len)
+{
+	std::ofstream ofs(filename, std::ios::out | std::ios::binary);
+	ofs.write(buf, buf_len);
+	ofs.close();
+
+	return true;
 }
