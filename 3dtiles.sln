@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3dtileslib", "src\3dtileslib.vcxproj", "{635F5E43-A8F9-4DF1-94B7-3620731829C7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "conv3dtiles", "conv3dtiles\conv3dtiles.vcxproj", "{6270E864-D997-42B9-A4D1-404DC22751E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{635F5E43-A8F9-4DF1-94B7-3620731829C7} = {635F5E43-A8F9-4DF1-94B7-3620731829C7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
