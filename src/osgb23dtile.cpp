@@ -11,7 +11,7 @@
 #include <set>
 #include <vector>
 #include <string>
-#include <cstring>
+//#include <cstring>
 #include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -693,7 +693,7 @@ std::string encode_tile_json(osg_tree& tree) {
 }
 
 std::string osg_string ( const char* path ) {
-    #ifdef WIN32
+    #ifndef WIN32 
         std::string root_path =
         osgDB::convertStringFromUTF8toCurrentCodePage(path);
     #else

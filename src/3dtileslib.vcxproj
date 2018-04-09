@@ -86,7 +86,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenThreads.lib;osg.lib;osgDB.lib;osgUtil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>osgd.lib;osgDBd.lib;osgUtild.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy .\osgb23dtile.h $(SolutionDir)include /Y</Command>

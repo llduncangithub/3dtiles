@@ -43,6 +43,8 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <fstream>
+#include <iostream>
 
 namespace tinygltf {
 
