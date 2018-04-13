@@ -156,6 +156,8 @@ pub fn osgb_batch_convert(
             }
         }
     }
+
+	//计算root节点的aabb
     let mut root_box = vec![-1.0E+38f64, -1.0E+38, -1.0E+38, 1.0E+38, 1.0E+38, 1.0E+38];
     for x in tile_array.iter() {
         for i in 0..3 {
