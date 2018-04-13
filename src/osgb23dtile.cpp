@@ -743,7 +743,7 @@ extern "C" void* osgb23dtile_path(
     std::string json = encode_tile_json(root);
     memcpy(box, root.bbox.max.data(), 3 * sizeof(double));
     memcpy(box + 3, root.bbox.min.data(), 3 * sizeof(double));
-    void* str = malloc(json.length());
+    void* str = malloc(json.length());  //调用者需要用free释放该dll分配的空间
     memcpy(str, json.c_str(), json.length());
     *len = json.length();
     return str;

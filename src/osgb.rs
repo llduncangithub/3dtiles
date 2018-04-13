@@ -107,7 +107,7 @@ pub fn osgb_batch_convert(
                 // convert this path:倾斜摄影测量数据目录中的pagedlod根文件
                 task_count += 1;
                 let in_buf = str_to_vec_c(osgb.to_str().unwrap());  //输入pagedlod的root节点
-                let out_dir = dir_dest.join("Data").join(stem);     //输出目录+"/Data"+stem(节点树所在目录)
+                let out_dir = dir_dest.join("Data").join(stem);     //输出目录+"/Data/"+stem(节点树所在目录)
                 fs::create_dir_all(&out_dir)?;                      //创建输出目录
                 let out_buf = str_to_vec_c(out_dir.to_str().unwrap());
                 let path_clone = path_tile.clone();
