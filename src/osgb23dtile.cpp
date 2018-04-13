@@ -288,27 +288,30 @@ bool osgb2glb_buf(std::string path, std::string& glb_buff, std::vector<mesh_info
                 else if (j == 2) {
                     // normal
                     osg::Array* na = g->getNormalArray();
-                    osg::Vec3Array* v3f = (osg::Vec3Array*)na;
-                    vector<double> box_max = { -1e38, -1e38 ,-1e38 };
-                    vector<double> box_min = { 1e38, 1e38 ,1e38 };
-                    int normal_size = v3f->size();
-                    for (int vidx = 0; vidx < normal_size; vidx++)
-                    {
-                        osg::Vec3f point = v3f->at(vidx);
-                        put_val(buffer.data, point.x());
-                        put_val(buffer.data, point.z());
-                        put_val(buffer.data, -point.y());
-                    }
-                    tinygltf::Accessor acc;
-                    acc.bufferView = 2;
-                    acc.byteOffset = acc_offset[j];
-                    acc_offset[j] = buffer.data.size() - buf_offset;
-                    acc.count = normal_size;
-                    acc.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-                    acc.type = TINYGLTF_TYPE_VEC3;
-                    acc.maxValues = {1,1,1};
-                    acc.minValues = {-1,-1,-1};
-                    model.accessors.push_back(acc);
+					if (nullptr != na)
+					{
+						osg::Vec3Array* v3f = (osg::Vec3Array*)na;
+						vector<double> box_max = { -1e38, -1e38 ,-1e38 };
+						vector<double> box_min = { 1e38, 1e38 ,1e38 };
+						int normal_size = v3f->size();
+						for (int vidx = 0; vidx < normal_size; vidx++)
+						{
+							osg::Vec3f point = v3f->at(vidx);
+							put_val(buffer.data, point.x());
+							put_val(buffer.data, point.z());
+							put_val(buffer.data, -point.y());
+						}
+						tinygltf::Accessor acc;
+						acc.bufferView = 2;
+						acc.byteOffset = acc_offset[j];
+						acc_offset[j] = buffer.data.size() - buf_offset;
+						acc.count = normal_size;
+						acc.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+						acc.type = TINYGLTF_TYPE_VEC3;
+						acc.maxValues = { 1,1,1 };
+						acc.minValues = { -1,-1,-1 };
+						model.accessors.push_back(acc);
+					}
                 }
                 else if (j == 3) {
                     // text
@@ -376,6 +379,7 @@ bool osgb2glb_buf(std::string path, std::string& glb_buff, std::vector<mesh_info
             char* buf = 0;
             int width, height;
             {
+#if 0
                 osg::Texture* tex = *infoVisitor.texture_array.begin();
                 if (tex) {
                     if (tex->getNumImages() > 0) {
@@ -387,6 +391,19 @@ bool osgb2glb_buf(std::string path, std::string& glb_buff, std::vector<mesh_info
                         }
                     }
                 }
+#else		
+				if (infoVisitor.texture_array.size()>0) {
+					osg::Texture* tex = *infoVisitor.texture_array.begin();
+					if (tex->getNumImages() > 0) {
+						osg::Image* img = tex->getImage(0);
+						if (img) {
+							width = img->s();
+							height = img->t();
+							buf = (char*)img->getDataPointer();
+						}
+					}
+				}
+#endif
             }
             if (buf) {
                 stbi_write_jpg_to_func(write_buf, &buffer.data, width, height, 3, buf, 80);
