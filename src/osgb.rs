@@ -132,7 +132,7 @@ pub fn osgb_batch_convert(
                             out_ptr,
                             json_len as usize,
                         );
-                        libc::free(out_ptr);
+                        libc::free(out_ptr);  //释放dll中分配的虚存,注意此时crt都是MD,即动态链接
                     }
                     let t = TileResult {
                         json: String::from_utf8(json_buf).unwrap(),
