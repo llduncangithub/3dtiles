@@ -135,8 +135,8 @@ pub fn osgb_batch_convert(
                         libc::free(out_ptr);  //释放dll中分配的虚存,注意此时crt都是MD,即动态链接
                     }
                     let t = TileResult {
-                        json: String::from_utf8(json_buf).unwrap(),
-                        box_v: root_box,
+                        json: String::from_utf8(json_buf).unwrap(),  //tile_json
+                        box_v: root_box,                             //tile_aabb
                     };
                     sender_clone.send(t).unwrap();
                 });
@@ -147,17 +147,17 @@ pub fn osgb_batch_convert(
         }
     }
 
-    // merge and root
+    // merge and root 将每个tile的信息merge到场景的root节点中
     let mut tile_array = vec![];
     for _ in 0..task_count {
         if let Ok(t) = receiver.recv() {
             if !t.json.is_empty() {
-                tile_array.push(t);
+                tile_array.push(t);  //收集处理的每个tile的TileResult对象
             }
         }
     }
 
-	//计算root节点的aabb
+	//计算root节点的aabb(root_box)
     let mut root_box = vec![-1.0E+38f64, -1.0E+38, -1.0E+38, 1.0E+38, 1.0E+38, 1.0E+38];
     for x in tile_array.iter() {
         for i in 0..3 {

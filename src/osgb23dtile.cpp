@@ -749,6 +749,9 @@ extern "C" void* osgb23dtile_path(
     return str;
 }
 
+/**
+单个文件osgb到b3dm的转换
+*/
 extern "C" bool osgb23dtile(
     const char* in, const char* out ) {
     std::string b3dm_buf;
