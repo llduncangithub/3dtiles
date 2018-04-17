@@ -683,7 +683,7 @@ std::string encode_tile_json(osg_tree& tree) {
     tile += ",";
     tile += "\"content\":{ \"url\":";
     // Data/Tile_0/Tile_0.b3dm
-    std::string url_path = "Data/";
+	std::string url_path; //= "Data/";
     std::string file_name = get_file_name(tree.file_name);
     std::string parent_str = get_parent(tree.file_name);
     std::string file_path = get_file_name(parent_str);
@@ -726,26 +726,61 @@ in_path:      pagedlod的根节点文件名
 out_path:     将整个pagedlod树转换成3dtile后的输出目录,须调用者事先创建该目录
 */
 extern "C" void* osgb23dtile_path(
-    const char* in_path, const char* out_path, 
-    double *box, int* len, int max_lvl) {
-    
-    std::string path = osg_string(in_path);
-    osg_tree root = get_all_tree(path);
-    if (root.file_name.empty()) {
-        return NULL;
-    }
-    do_tile_job(root, out_path, max_lvl);
-    // 返回 json 和 最大bbox
-    extend_tile_box(root);
-    if (root.bbox.max.empty() || root.bbox.min.empty()) {
-        return NULL;
-    }
-    std::string json = encode_tile_json(root);
+	const char* in_path, const char* out_path,
+	double *box, int* len, int max_lvl) {
+
+	std::string path = osg_string(in_path);
+	osg_tree root = get_all_tree(path);
+	if (root.file_name.empty()) {
+		return NULL;
+	}
+	do_tile_job(root, out_path, max_lvl);
+	// 返回 json 和 最大bbox
+	extend_tile_box(root);
+	if (root.bbox.max.empty() || root.bbox.min.empty()) {
+		return NULL;
+	}
+
+	//获取根节点得geometricError
+	int lvl = get_lvl_num(root.file_name);
+	if (lvl == -1) lvl = 15;
+
+	double geometricError = root.sub_nodes.empty() ? 0 : get_geometric_error(lvl);
+	geometricError *= 5;
+
+	std::string json_tile;
+	{
+		json_tile = "{\"asset\": {\
+            \"version\": \"0.0\",\
+            \"gltfUpAxis\": \"Y\"\
+			},\
+            \"refine\" : \"REPLACE\",\
+			\"geometricError\":";
+		json_tile += std::to_string(geometricError);
+		json_tile += ",\"root\": ";
+		/*std::string trans_str = "\"transform\": [";
+		if (trans) {
+			for (int i = 0; i < 15; i++) {
+				trans_str += std::to_string(matrix[i]);
+				trans_str += ",";
+			}
+			trans_str += "1],";
+			json_txt += trans_str;
+		}*/
+	}
+
+	std::string json_inner = encode_tile_json(root);
+	json_tile += json_inner;
+
+	json_tile += "}";   //json end
+
+	//不用返回字符串,直接存储成json文件,一个目录一个json文件
+
     memcpy(box, root.bbox.max.data(), 3 * sizeof(double));
     memcpy(box + 3, root.bbox.min.data(), 3 * sizeof(double));
-    void* str = malloc(json.length());  //调用者需要用free释放该dll分配的空间
-    memcpy(str, json.c_str(), json.length());
-    *len = json.length();
+    void* str = malloc(json_tile.length());  //调用者需要用free释放该dll分配的空间
+    memcpy(str, json_tile.c_str(), json_tile.length());
+    *len = json_tile.length();
     return str;
 }
 
