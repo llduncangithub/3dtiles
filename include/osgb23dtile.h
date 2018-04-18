@@ -12,6 +12,10 @@
 #define TILE_API __declspec(dllimport)
 #endif
 
+extern "C" TILE_API bool pagedlod23dtile_dir(
+	const char* in_dir, const char* out_dir, const char* metadata,
+	int max_lvl);
+
 extern "C" TILE_API bool osgb23dtile_path(
 	const char* in_path, const char* out_path,
 	double *box, int max_lvl);

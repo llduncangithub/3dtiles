@@ -722,6 +722,20 @@ std::string osg_string ( const char* path ) {
     #endif // WIN32
     return root_path;
 }
+
+/**
+in_dir:			pagedlod的分根目录,每个根是一个子目录，子目录的名称就是根节点的文件名称，不带后缀
+out_dir:		按照in_dir的目录结构逐个转换osgb pagedlod到3dtile
+max_lvl:		支持的最大的树的高度
+metadata:       针对smart3d输出的Pagedlod数据自带的xml元数据描述的解析与利用
+*/
+bool pagedlod23dtile_dir(
+	const char* in_dir, const char* out_dir, const char* metadata,
+	int max_lvl)
+{
+	return true;
+}
+
 /**
 外部创建好目录
 外面分配好 box[6][double]
