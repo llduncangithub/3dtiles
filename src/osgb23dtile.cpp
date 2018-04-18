@@ -733,6 +733,44 @@ bool pagedlod23dtile_dir(
 	const char* in_dir, const char* out_dir, const char* metadata,
 	int max_lvl)
 {
+	//const std::string _op_data_path("D:\\实验数据\\倾斜摄影测量数据\\倾斜摄影数据\\数据1\\Data\\Data");
+	const std::string _op_data_path(in_dir);
+	std::string _last_dir;
+	{
+		std::vector<std::string> _path_elems;
+		osgDB::getPathElements(_op_data_path, _path_elems);
+		_last_dir = _path_elems.back();
+	}
+
+	//std::string _op_out_path("D:\\实验数据\\倾斜摄影测量数据\\倾斜摄影数据\\result");
+	std::string _op_out_path(out_dir);
+	_op_out_path = osgDB::concatPaths(_op_out_path, _last_dir);
+	if (false == osgDB::fileExists(_op_out_path))
+		osgDB::makeDirectory(_op_out_path);
+
+	osgDB::DirectoryContents subDirs = osgDB::getDirectoryContents(_op_data_path);
+	for (std::size_t s = 0; s < subDirs.size(); s++)
+	{
+		if (subDirs[s].compare(".") == 0 ||
+			subDirs[s].compare("..") == 0)
+			continue;
+
+		std::string root_node_filepath =
+			osgDB::concatPaths(osgDB::convertFileNameToNativeStyle(_op_data_path),
+				subDirs[s]);
+
+		if (osgDB::FileType::REGULAR_FILE == osgDB::fileType(root_node_filepath) ||
+			osgDB::FileType::FILE_NOT_FOUND == osgDB::fileType(root_node_filepath))
+			continue;
+
+		root_node_filepath = osgDB::concatPaths(root_node_filepath, subDirs[s] + ".osgb");
+
+		if (false == osgDB::fileExists(root_node_filepath))
+			continue;
+
+		
+	}
+
 	return true;
 }
 

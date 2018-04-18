@@ -18,7 +18,7 @@ int main()
 	const std::string inpath("D:\\实验数据\\倾斜摄影测量数据\\倾斜摄影数据\\result\\Data\\");
 	const std::string outpath("D:\\实验数据\\倾斜摄影测量数据\\倾斜摄影数据\\3dtile");
 
-	bool hr = osgb23dtile_path(inpath.c_str(), outpath.c_str(), nullptr, 100);
+	bool hr = pagedlod23dtile_dir(inpath.c_str(), outpath.c_str(), nullptr, 100);
 #endif
 
 	return 0;
