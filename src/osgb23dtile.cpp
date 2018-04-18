@@ -683,14 +683,18 @@ std::string encode_tile_json(osg_tree& tree) {
     tile += ",";
     tile += "\"content\":{ \"url\":";
     // Data/Tile_0/Tile_0.b3dm
-	std::string url_path; //= "Data/";
+#if 0
+	std::string url_path = "Data/";
     std::string file_name = get_file_name(tree.file_name);
     std::string parent_str = get_parent(tree.file_name);
     std::string file_path = get_file_name(parent_str);
     url_path += file_path;
     url_path += "/";
     url_path += file_name;
+#else
+	std::string url_path = osgDB::getSimpleFileName(tree.file_name);
     std::string url = replace(url_path,".osgb",".b3dm");
+#endif
     tile += "\"";
     tile += url;
     tile += "\",";
@@ -725,9 +729,9 @@ std::string osg_string ( const char* path ) {
 in_path:      pagedlod的根节点文件名
 out_path:     将整个pagedlod树转换成3dtile后的输出目录,须调用者事先创建该目录
 */
-extern "C" void* osgb23dtile_path(
+extern "C" bool osgb23dtile_path(
 	const char* in_path, const char* out_path,
-	double *box, int* len, int max_lvl) {
+	double *box, int max_lvl) {
 
 	std::string path = osg_string(in_path);
 	osg_tree root = get_all_tree(path);
@@ -774,14 +778,35 @@ extern "C" void* osgb23dtile_path(
 
 	json_tile += "}";   //json end
 
-	//不用返回字符串,直接存储成json文件,一个目录一个json文件
+	//返回根root的aabb
+	memcpy(box, root.bbox.max.data(), 3 * sizeof(double));
+	memcpy(box + 3, root.bbox.min.data(), 3 * sizeof(double));
 
-    memcpy(box, root.bbox.max.data(), 3 * sizeof(double));
-    memcpy(box + 3, root.bbox.min.data(), 3 * sizeof(double));
-    void* str = malloc(json_tile.length());  //调用者需要用free释放该dll分配的空间
-    memcpy(str, json_tile.c_str(), json_tile.length());
-    *len = json_tile.length();
-    return str;
+	//不用返回字符串,直接存储成json文件,一个目录一个json文件
+	std::string json_file = path;
+	json_file = replace(json_file, ".osgb", ".json");
+
+	bool ret = write_file(json_file.c_str(), json_tile.data(), json_tile.size());
+	if (!ret)
+	{
+		//printf("write file %s fail\n", json_file);
+		std::cout << "write file " << json_file << " fail." << std::endl;
+		return false;
+	}
+
+#if 0
+	/*
+	释放了动态库中malloc的字符串虚存;
+	但必须确保动态库与本exe的crt是MD,即动态链接的,不能是静态链接(/MT)的;
+	MT静态链接crt会导致每个模块都有独立的heap,相同的指针在不同的heap中导致堆冲突,从而会crash掉;
+	*/
+	void* str = malloc(json_tile.length());  //调用者需要用free释放该dll分配的空间
+	memcpy(str, json_tile.c_str(), json_tile.length());
+	*len = json_tile.length();
+	return str;
+#else
+	return true;
+#endif
 }
 
 /**

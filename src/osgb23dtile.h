@@ -12,9 +12,9 @@
 #define TILE_API __declspec(dllimport)
 #endif
 
-extern "C" TILE_API void* osgb23dtile_path(
+extern "C" TILE_API bool osgb23dtile_path(
 	const char* in_path, const char* out_path,
-	double *box, int* len, int max_lvl);
+	double *box, int max_lvl);
 
 extern "C" TILE_API bool osgb23dtile(
 	const char* in, const char* out);
